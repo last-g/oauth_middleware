@@ -27,8 +27,10 @@ class MissingTokenException(ZalandoAuthException):
 class MissingTokenInfoException(ZalandoAuthException):
     pass
 
+class TokenNotValidException(ZalandoAuthException):
+    pass
 
-class TokenIsExpiredException(ZalandoAuthException):
+class TokenIsExpiredException(TokenNotValidException):
     pass
 
 
@@ -156,7 +158,8 @@ def _get_auth_info_from_cache():
     if not auth_info or not isinstance(auth_info, dict):
         return None
     if auth_info.get('access_token') != token:
-        return auth_info
+        return None
+    return auth_info
 
 
 def get_auth_info(cache=True):
@@ -164,6 +167,11 @@ def get_auth_info(cache=True):
         token_info = request_tokeninfo()
         if token_info.status == 200:
             _set_session_data('token_info', token_info_to_auth_info(token_info))
+        elif token_info.status == 400:
+            # Probably token not valid
+            msg = "Can't get info for token. Rerequest? %s:%s", token_info, token_info.data
+            log.warn(msg[0], *msg[1:])
+            raise TokenNotValidException(msg)
         else:
             msg = "Error while getting token info %s:%s", token_info, token_info.data
             log.warn(msg[0], *msg[1:])
@@ -220,8 +228,8 @@ def auth_required(view=None, **auth_args):
                     check_auth()  # this will raise exception if auth needed
                 return view(*args, **kwargs)
 
-            except MissingTokenException:
-                log.debug('Initiating web-browser auth flow')
+            except (MissingTokenException, TokenNotValidException) as e:
+                log.debug('Initiating web-browser auth flow. Because %s', e)
                 return redirect(url_for('login'))
             except ZalandoAuthException as e:
                 log.exception('Exception during authorization: %s', e)
