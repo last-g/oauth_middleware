@@ -150,11 +150,12 @@ def token_info_to_auth_info(token_info):
 
 
 def _get_auth_info_from_cache():
-    token = _get_session_data('token_info')
+    token = _get_session_data('token')
     if not token:
         return None
 
     auth_info = _get_session_data('token_info')
+
     if not auth_info or not isinstance(auth_info, dict):
         return None
     if auth_info.get('access_token') != token:
@@ -299,7 +300,10 @@ def authorized():
         if not isinstance(resp, dict):
             raise Forbidden('Invalid auth response %s' % (resp,))
         log.info("Auth success: %s", resp)
+
         _set_session_data('token', resp['access_token'])
+        _set_session_data('token_info', get_auth_info())
+
         return redirect(current_app.config['SUCCESS_LOGIN_PATH'])
     except OAuthException as e:
         msg = 'OAuth failed %s:%s', e, e.data
