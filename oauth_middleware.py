@@ -9,6 +9,7 @@ from datetime import datetime
 
 from flask import Flask, redirect, url_for, session, request, current_app
 from flask_oauthlib.client import OAuth, OAuthException
+from werkzeug.contrib.fixers import ProxyFix
 from werkzeug.exceptions import Unauthorized, Forbidden, InternalServerError
 from six import wraps, raise_from
 
@@ -101,6 +102,8 @@ def make_oauth_wsgi(oauth, next_app, config=None):
     auth = get_auth_provider(oauth)
     if not auth._tokengetter:
         auth.tokengetter(get_oauth_token)
+
+    app.wsgi_app = ProxyFix(app.wsgi_app)
 
     return app
 
