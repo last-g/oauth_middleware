@@ -79,7 +79,7 @@ def get_oauth_token():
 
 
 def make_oauth_wsgi(oauth, next_app, config=None):
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder=None)
     if config:
         app.config.update(config)
     else:
@@ -93,10 +93,13 @@ def make_oauth_wsgi(oauth, next_app, config=None):
     app.add_url_rule(
         '/',
         endpoint=None, view_func=default_handler,
+        methods=['GET', 'HEAD', 'POST', 'PUT', 'DELETE'],
     )
     app.add_url_rule(
         '/<path:any>',
         endpoint=None, view_func=default_handler,
+        methods=['GET', 'HEAD', 'POST', 'PUT', 'DELETE'],
+
     )
 
     auth = get_auth_provider(oauth)
