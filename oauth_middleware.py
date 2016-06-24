@@ -80,6 +80,13 @@ def get_oauth_token():
     return token, ''
 
 
+def is_script_request():
+    if 'Authorization' in request.headers:
+        return True
+
+    return False
+
+
 def make_oauth_wsgi(oauth, next_app, config=None):
     app = Flask(__name__, static_folder=None)
     if config:
@@ -150,7 +157,7 @@ def token_info_to_auth_info(token_info):
 
 
 def _get_auth_info_from_cache():
-    token = _get_session_data('token')
+    token = get_oauth_token()[0]
     if not token:
         return None
 
@@ -159,6 +166,7 @@ def _get_auth_info_from_cache():
     if not auth_info or not isinstance(auth_info, dict):
         return None
     if auth_info.get('access_token') != token:
+        log.debug('Token&tokeninfo mismatch. Token %s, token info: %s', token, auth_info)
         return None
     return auth_info
 
@@ -229,9 +237,13 @@ def auth_required(view=None, **auth_args):
                     check_auth()  # this will raise exception if auth needed
                 return view(*args, **kwargs)
 
-            except (MissingTokenException, TokenNotValidException) as e:
-                log.debug('Initiating web-browser auth flow. Because %s', e)
-                return redirect(url_for('login'))
+            except (MissingTokenException, TokenNotValidException, TokenIsExpired) as e:
+                log.debug("Can't' authorize user")
+                if is_script_request():
+                    raise Unauthorized('Problem on auth step {}'.format(e))
+                else:
+                    log.debug('Initiating web-browser auth flow. Because %s', e)
+                    return redirect(url_for('login'))
             except ZalandoAuthException as e:
                 log.exception('Exception during authorization: %s', e)
                 return InternalServerError('Exception occurred during authorization process. Check server logs')
