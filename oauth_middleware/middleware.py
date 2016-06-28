@@ -89,6 +89,8 @@ def is_script_request():
 
 def make_oauth_wsgi(oauth, next_app, config=None):
     app = Flask(__name__, static_folder=None)
+    app.config['PROPAGATE_EXCEPTIONS'] = True
+
     if config:
         app.config.update(config)
     else:
