@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='oauth_middleware',
-    version="0.1.1",  # TODO: Do not forget to update in __init__
+    version="0.2",  # TODO: Do not forget to update in __init__
     description="Simple flask_oauthlib based middleware for WSGI app to preform oauth",
     author="Last G",
     author_email='sergei.azovskov@zalando.de',
