@@ -25,7 +25,7 @@ except ImportError:
 
 
 import oauth_middleware
-import zalando_oauth
+from oauth_middleware.providers import zalando
 
 from os.path import dirname, abspath, join
 
@@ -75,7 +75,7 @@ def other():
     return 'other'
 
 
-oauth = zalando_oauth.make_zalando_oauth()
+oauth = zalando.make_zalando_oauth()
 application = oauth_middleware.make_oauth_wsgi(oauth, test_app.wsgi_app, CONF_TEMPLATE)
 
 
