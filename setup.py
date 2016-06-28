@@ -12,7 +12,7 @@ setup(
     author_email='sergei.azovskov@zalando.de',
     url='https://github.com/last-g/oauth_middleware',
     packages=find_packages(),
-    requires=[
+    install_requires=[
         'flask',
         'flask_oauthlib',
         'werkzeug',
