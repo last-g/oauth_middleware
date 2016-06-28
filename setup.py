@@ -10,6 +10,7 @@ setup(
     description="Simple flask_oauthlib based middleware for WSGI app to preform oauth",
     author="Last G",
     author_email='sergei.azovskov@zalando.de',
+    url='https://github.com/last-g/oauth_middleware',
     packages=find_packages(),
     requires=[
         'flask',
