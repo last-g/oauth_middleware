@@ -17,6 +17,8 @@ Installation:
 -------------
 
 * `pip install oauth_middleware`
+
 or
+
 * just mention `oauth_middleware` in your requirements
 
