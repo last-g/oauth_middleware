@@ -80,7 +80,7 @@ def test_auth_skipping():
     resp = client.get('/healthcheck')
 
     assert resp.status_code == 200
-    assert resp.data == 'OK'
+    assert resp.data == b'OK'
 
 
 def test_home_initiate_auth():
@@ -147,7 +147,7 @@ def test_auth_via_token_header():
         )
 
     assert resp.status_code == 200
-    assert resp.data == 'other'
+    assert resp.data == b'other'
 
 
 def test_auth_via_basic_auth():
@@ -180,7 +180,7 @@ def test_auth_via_basic_auth():
         )
 
     assert resp.status_code == 200
-    assert resp.data == 'other'
+    assert resp.data == b'other'
 
 
 def test_all_domains():
@@ -193,7 +193,7 @@ def test_all_domains():
         }
     )
     assert resp.status_code == 200
-    assert resp.data == 'OK'
+    assert resp.data == b'OK'
 
 
 def test_all_domains_with_protection():

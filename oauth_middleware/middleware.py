@@ -51,7 +51,7 @@ def get_oauth_token():
         elif request.headers['Authorization'].startswith('Basic'):
             try:
                 auth_header_part = request.headers['Authorization'].split(' ', 1)[1]
-                auth_data = base64.b64decode(auth_header_part)
+                auth_data = base64.b64decode(auth_header_part).decode()
                 _, token = auth_data.split(':', 1)
             except Exception as e:
                 msg = (
