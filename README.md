@@ -1,2 +1,21 @@
-# oauth_middleware
-WSGI middleware for OAuth 
+# WSGI middleware for OAuth
+
+This is simple (not really) middleware based on flask_oauthlib that provides
+full protection with oauth for your WSGI application.
+
+
+Features
+--------
+
+* support for any WSGI based application
+* web-based authentication
+* basic auth with token authentication for scripts
+
+
+Installation:
+-------------
+
+* `pip install oauth_middleware`
+or
+* just mention `oauth_middleware` in your requirements
+
