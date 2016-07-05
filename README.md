@@ -1,4 +1,5 @@
 # WSGI middleware for OAuth
+[![Build Status](https://travis-ci.org/last-g/oauth_middleware.svg?branch=master)](https://travis-ci.org/last-g/oauth_middleware)
 
 This is simple (not really) middleware based on flask_oauthlib that provides
 full protection with oauth for your WSGI application.
