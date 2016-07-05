@@ -17,30 +17,24 @@ from six.moves.urllib.parse import urlparse, parse_qs
 import requests
 from requests.auth import _basic_auth_str
 
-
 try:
     from unittest import mock
 except ImportError:
     import mock
-
 
 import oauth_middleware
 from oauth_middleware.providers import zalando
 
 from os.path import dirname, abspath, join
 
-
 CONF_TEMPLATE = {
-    'DEBUG': True,
     'TESTING': True,
     'SECRET_KEY': 'development',
-    'PREFERRED_URL_SCHEME': 'http',
-    'SERVER_NAME': 'localhost:31337',
     'SKIP_AUTH_FOR': [
         '^/login',
         '^/logout$',
         '^/healthcheck$',
-        '^/healt$',
+        '^/health$',
     ],
     'SUCCESS_LOGIN_PATH': '/',
     'ZALANDO_OAUTH': {
@@ -59,6 +53,7 @@ CONF_TEMPLATE = {
 }
 
 test_app = Flask(__name__)
+
 
 @test_app.route('/')
 def index():
@@ -94,7 +89,7 @@ def test_home_initiate_auth():
     resp = client.get('/')
 
     assert resp.status_code == 302
-    assert resp.headers['Location'] == 'http://localhost:31337/login'
+    assert resp.headers['Location'] == 'http://localhost/login'
 
 
 def test_other_initiate_auth():
@@ -103,7 +98,7 @@ def test_other_initiate_auth():
     resp = client.get('/other/very/deep/url?q=whatever')
 
     assert resp.status_code == 302
-    assert resp.headers['Location'] == 'http://localhost:31337/login'
+    assert resp.headers['Location'] == 'http://localhost/login'
 
 
 def test_login_initiates_oauth():
@@ -117,7 +112,7 @@ def test_login_initiates_oauth():
     assert redirect_to.path == '/oauth2/authorize'
     qs = parse_qs(redirect_to.query)
 
-    assert qs['redirect_uri'] == ['http://localhost:31337/login/oauth_callback']
+    assert qs['redirect_uri'] == ['http://localhost/login/oauth_callback']
     assert qs['scope'] == ['uid cn']
     assert qs['realm'] == ['/employees']
 
@@ -188,3 +183,26 @@ def test_auth_via_basic_auth():
     assert resp.data == 'other'
 
 
+def test_all_domains():
+    client = application.test_client()
+
+    resp = client.get(
+        '/healthcheck',
+        headers={
+            'Host': 'example.com',
+        }
+    )
+    assert resp.status_code == 200
+    assert resp.data == 'OK'
+
+
+def test_all_domains_with_protection():
+    client = application.test_client()
+
+    resp = client.get(
+        '/other/very/deep/url',
+        headers={
+            'Host': 'example.com',
+        }
+    )
+    assert resp.status_code == 302
