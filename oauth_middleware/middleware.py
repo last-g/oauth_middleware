@@ -269,7 +269,7 @@ def _skip_auth_on_pattern():
 
 @auth_required(skip_on=_skip_auth_on_pattern)
 def default_handler(*args, **kwargs):
-    log.info('Calling to next app')
+    log.debug('Calling to next app')
     return PassingResponse(current_app.next_app)
 
 
