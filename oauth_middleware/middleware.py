@@ -3,6 +3,7 @@ from __future__ import unicode_literals, absolute_import, division, print_functi
 
 import base64
 import logging
+import os
 import re
 from copy import deepcopy
 from datetime import datetime
@@ -137,8 +138,9 @@ def _clean_session_data():
 
 
 def request_tokeninfo():
+    token_info_url = os.environ.get('TOKENINFO_URL', 'tokeninfo')
     auth = get_auth_provider()
-    tokeninfo = auth.request('tokeninfo')
+    tokeninfo = auth.request(token_info_url)
     log.debug('Got token info: %s:%s', tokeninfo, tokeninfo.data)
     return tokeninfo
 
