@@ -3,9 +3,12 @@ from __future__ import division, unicode_literals, print_function, absolute_impo
 import textwrap
 
 from setuptools import setup, find_packages
+from os.path import join
+
+NAME='oauth_middleware'
 
 setup(
-    name='oauth_middleware',
+    name=NAME,
     version="0.2",  # TODO: Do not forget to update in __init__
     description="Simple flask_oauthlib based middleware for WSGI app to preform oauth",
     author="Last G",
@@ -18,6 +21,10 @@ setup(
         'werkzeug',
         'six'
     ],
+    setup_requires=['setuptools_scm'],
+    use_scm_version={
+        'write_to': join(NAME, '_version.py'),
+    },
     classifiers=textwrap.dedent("""
         Development Status :: 3 - Alpha
         Intended Audience :: Developers
