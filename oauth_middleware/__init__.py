@@ -1,8 +1,8 @@
 from __future__ import division, unicode_literals, print_function, absolute_import
 
 try:
-    import ._version
-    __version__ = __VERSION__ = _version.version
+    from ._version import version as __VERSION__
+    __version__ = __VERSION__
 
 except ImportError:
     __version__ = __VERSION__ = "0.0.0dev0"
