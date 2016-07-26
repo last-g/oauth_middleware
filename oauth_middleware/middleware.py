@@ -139,6 +139,8 @@ def _clean_session_data():
 
 def request_tokeninfo():
     token_info_url = os.environ.get('TOKENINFO_URL', 'tokeninfo')
+    log.debug('Checking token with url: %s', token_info_url)
+
     auth = get_auth_provider()
     tokeninfo = auth.request(token_info_url)
     log.debug('Got token info: %s:%s', tokeninfo, tokeninfo.data)
