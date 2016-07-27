@@ -182,13 +182,13 @@ def get_auth_info(cache=True):
         token_info = request_tokeninfo()
         if token_info.status == 200:
             _set_session_data('token_info', token_info_to_auth_info(token_info))
-        elif token_info.status == 400:
+        elif token_info.status in [400, 401]:
             # Probably token not valid
             msg = "Can't get info for token. Rerequest? %s:%s", token_info, token_info.data
             log.warn(msg[0], *msg[1:])
             raise TokenNotValidException(msg)
         else:
-            msg = "Error while getting token info %s:%s", token_info, token_info.data
+            msg = "Error while getting token info %s:%s . Status: %s", token_info, token_info.data, token_info.status
             log.warn(msg[0], *msg[1:])
             raise MissingTokenInfoException(msg[0] % msg[1:])
 
